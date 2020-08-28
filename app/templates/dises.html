@@ -1,0 +1,158 @@
+{% extends 'layout.html' %}
+
+        {% block body %}
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{{res.restaurant_name}}-Dises<a href="../"><button class="btn btn-success btn-sm float-right submit_btn"  type='submit'><i class="fas fa-arrow-alt-circle-left"></i> Home</button></a></h1>
+            <a href="billing/{{id}}"><button class="btn btn-success btn-sm float-right submit_btn"><i class="fas fa-file-invoice"></i> Billing</button></a>
+            <button type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i>Add Dises</button>
+            
+          </div> -->
+
+
+
+          <div class="panel">
+            <h3 class="panel-header">{{res.restaurant_name}}-Dises 
+              <button type="button" style="background-color: rgb(100,149,221);" class="btn btn-success btn-sm float-right submit_btn" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i>Add Dises</button>
+
+            </h3>
+            <div id="gridContainer">
+              <div class="row grid-row">
+                <div class="col-sm-4">
+                  
+                  <a href="../"><button class="btn btn-success btn-sm float-right submit_btn mx-2 my-2"  type='submit'><i class="fas fa-arrow-alt-circle-left"></i> Home</button></a>
+
+                  <a href="billing/{{id}}"><button class="btn btn-success btn-sm float-right submit_btn mx-2 my-2"><i class="fas fa-file-invoice"></i> Billing</button></a>
+                
+                </div>
+              </div>
+              
+            </div>
+          </div>
+
+
+          <!-- heading end -->
+          
+<div class="row">
+  {% for obj in data %}
+  
+  <div class="col-xl-3 col-md-6 mb-4" >
+    <div class="card border-left-primary shadow h-100 py-2">
+      <!-- <a href="/dises/{{obj.id}}" style="text-decoration-line:none;"> -->
+      <div class="card-body" >
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xl font-weight-bold text-primary text-uppercase mb-1">{{obj.dises_name}}</div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ obj.dises_price }}Rs</div>
+          </div>
+          <div class="col-auto">
+            <a href="/editdises/{{obj.res_id}}/{{obj.id}}"> <i class="fas fa-edit fa-2x text-gray-500"></i></a>
+
+            <a href="/deletedises/{{obj.res_id}}/{{obj.id}}"><i class="fas fa-trash-alt fa-2x text-gray-500"></i></a>
+          </div>
+        </div>
+      </div>
+    <!-- </a> -->
+    </div>
+  </div>
+
+  {% endfor %}
+
+  <div class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Add Dises</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="card-body">
+            <form action='../adddis' method='post'>
+                    {% csrf_token %}
+              <div id="dynamic_container">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text br-15"><i class="fas fa-bread-slice"></i></span>
+                  </div>
+                  <input type="hidden" placeholder="Dis Name" class="form-control" name="res_id" value="{{id}}" />
+                  <input type="text" placeholder="Dis Name" class="form-control" name="dis_name" required />
+                </div>
+    
+                <div class="input-group mt-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text br-15"><i class="fas fa-money-check"></i></span>
+                  </div>
+                  <input type="text" placeholder="Price" class="form-control" name="price" required/>
+                </div>
+              </div>
+                <div class="card-footer">
+                  <button class="btn btn-success btn-sm float-right submit_btn"  type='submit'><i class="fas fa-arrow-alt-circle-right"></i> Add</button>
+                    </div>
+            </form>
+          </div>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+
+
+
+<hr style="color:black;">
+<center><h1 class="h3 mb-0 text-gray-800">Reports</h1></center>
+<hr>
+
+<div class="row">
+  
+  <div class="col-xl-3 col-md-6 mb-4" >
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body" >
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+
+            <center><div class="text-xl font-weight-bold text-primary text-uppercase mb-1"><b style="color:black;">Best Seller :</b>  {{best}}</div>
+            </center>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="piechart"></div>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  // Load google charts
+  google.load('visualization', '1.0', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+  
+  
+  function drawChart() {
+    const  mydata = {{ listdata|safe }};
+
+    
+    var data = google.visualization.arrayToDataTable(mydata);
+  
+    var options = {'title':'My Average Day', 'width':550, 'height':400};
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    chart.draw(data, options);
+  }
+  </script>
+
+{%  endblock %}

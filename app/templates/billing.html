@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+        {% block body %}
+        <a href="/dises/{{res_id}}"><button class="btn btn-success btn-sm float-right submit_btn"  type='submit'><i class="fas fa-arrow-alt-circle-left"></i> Back</button></a>
+        <table >
+            <thead>  
+                <tr style="color:black;">
+                    <th><b>dises</b></td>
+                    <th><b>Add</b></td>
+                    <th><b>Quantity</b></td> 
+                </tr>
+        {% for i in obj %}
+        <tr>
+            <td><button style="border:1px solid black;color:black;" i class="btn btn-sm mx-2">{{i.dises_name}}</button></td>
+            <td><button style="border:1px solid black;color:black;" id="{{i.id}}"  class="btn btn-sm mx-2 cart" >+</button></td>
+            <td> <i  style="font-size: larger;color:blue; padding:10px" id="p{{i.id}}"  class="fas fa"> 0</i> <br/></td>
+                </tr>
+            {% endfor %}
+        </thead>
+    </table>
+            <form   method="post">
+                {% csrf_token %}
+                <input type="hidden" name="res_id" value="{{res_id}}"/>
+            <button class="btn btn-success btn-sm mt-5 mx-5 submit_btn" id="submit"><i class="fas fa-arrow-alt-circle-right"></i> Submit</button>
+        </form>
+
+
+
+        <div class="container h-100" style="display: none;" id="rest">
+            <div class="d-flex justify-content-center">
+                <div class="card mt-5 col-md-4 animated bounceInDown myForm" id="savepdf">
+                    <div class="card-header" style="background-color:rgb(23,166,115); color:white;text-align:center;">
+                        <h4>{{res.restaurant_name}}</h4>
+                    </div>
+                    <div class="card-header" style=" color:black;text-align:right;height: 12%">
+                        <h4 style="font-size: smaller;">Date: {{date}}</h4>
+                    </div>
+                    <div class="card-body">
+                        
+                            <div id="dynamic_container">
+
+                                <div class="input-group" id="Content">
+                                    <table id="itemList">
+                                        <thead>
+                                            
+                                            
+                                            <tr>
+                                                <th>No</td>
+                                                <th>Name</td>
+                                                <th>Price</td>
+                                                <th>Quantity</td>
+                                                <th>Total</td>
+                                            </tr>
+                                            
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="editor"></div>
+                            </div>
+                    </div>
+                    <div class="card-header" style=" color:black;text-align:right;">
+                        <h4>Total: <b id="total"></b></h4>
+                    </div>
+                    <button class="btn btn-success btn-sm mt-5 mx-5 submit_btn" id="pdf"><i class="fas fa-download"></i> Generate PDF</button>
+
+                    
+                </div>
+            </div>
+            </div>
+        {% endblock %}
+
+        
