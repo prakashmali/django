@@ -8,8 +8,16 @@ import ast
 # Create your views here.
 
 def index(request):
-    obj=Restaurant.objects.all()
-    return render(request,'index.html',{"data":obj})
+    return render(request,'login.html')
+
+def home(request):
+    username=request.POST.get('username')
+    password=request.POST.get('password')
+    if username == 'prakash9724' and password == '9712132751':
+        obj=Restaurant.objects.all()
+        return render(request,'index.html',{"data":obj})
+    else:
+        return render(request,'login.html')
 
 def add(request):
     if request.method=='POST':
