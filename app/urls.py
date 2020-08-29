@@ -20,6 +20,7 @@ from .import views
 urlpatterns = [
     path('', views.index,name='index'),
     path('home', views.home,name='home'),
+    path('Home', views.Home,name='Home'),
     path('add', views.add,name='add'),
     path('dises/<int:pk>', views.dises,name='dises'),
     
@@ -36,7 +37,6 @@ urlpatterns = [
     path('dises/billing/<int:res_id>', views.billing,name='billing'),
 
     path('dises/billdata/', views.billData,name='add'),
-    path('billview', views.billview,name='add'),
 
 
 ]

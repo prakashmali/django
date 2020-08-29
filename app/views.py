@@ -13,11 +13,18 @@ def index(request):
 def home(request):
     username=request.POST.get('username')
     password=request.POST.get('password')
-    if username == 'prakash9724' and password == '9712132751':
+    if password == '9712132751':
+        request.session['username'] = username
         obj=Restaurant.objects.all()
-        return render(request,'index.html',{"data":obj})
+        return render(request,'index.html',{"data":obj,'username':username})
     else:
         return render(request,'login.html')
+
+def Home(request):
+    username=request.session['username']
+    obj=Restaurant.objects.all()
+    return render(request,'index.html',{"data":obj,'username':username})
+    
 
 def add(request):
     if request.method=='POST':
@@ -30,9 +37,10 @@ def add(request):
             location=location
         )
         obj=Restaurant.objects.all()
-        return redirect('/')
+        return redirect('/Home')
 
 def dises(request,pk):
+    username=request.session['username']
     res=Restaurant.objects.get(id=pk)
     response=Dises.objects.filter(res_id=pk).exists()
     if response:
@@ -68,10 +76,10 @@ def dises(request,pk):
             best=data1[max(li2)]
 
         
-        return render(request,'dises.html',{'dises':data1,'best':best,'listdata':json.dumps(li3),"id":pk,"data":obj,'res':res})
+        return render(request,'dises.html',{'dises':data1,'best':best,'listdata':json.dumps(li3),"id":pk,"data":obj,'res':res,'username':username})
     else:
         
-        return render(request,'dises.html',{"id":pk,'res':res})
+        return render(request,'dises.html',{"id":pk,'res':res,'username':username})
         
 
 def addDis(request):
@@ -91,12 +99,14 @@ def addDis(request):
 
 
 def edit(request,pk):
-        obj=Restaurant.objects.get(id=pk)
-        return render(request,'edit_restaurant.html',{'obj':obj,'id':pk})
+    username=request.session['username']
+    obj=Restaurant.objects.get(id=pk)
+    return render(request,'edit_restaurant.html',{'obj':obj,'id':pk,'username':username})
 
 def editDises(request,res_id,pk):
-        obj=Dises.objects.get(id=pk)
-        return render(request,'edit_dises.html',{'obj':obj,'res_id':res_id,'id':pk})
+    username=request.session['username']
+    obj=Dises.objects.get(id=pk)
+    return render(request,'edit_dises.html',{'obj':obj,'res_id':res_id,'id':pk,'username':username})
 
 def editSave(request):
     if request.method=='POST':
@@ -107,7 +117,7 @@ def editSave(request):
         obj.restaurant_name=res_name
         obj.location=location
         obj.save()
-        return redirect('/')
+        return redirect('/Home')
 
 def editSaveDises(request):
     if request.method=='POST':
@@ -126,7 +136,7 @@ def delete(request,pk):
         Restaurant.objects.get(id=pk).delete()
         Dises.objects.filter(res_id=pk).delete()
         Transaction.objects.filter(res_id=pk).delete()
-        return redirect('/')
+        return redirect('/Home')
 
 
 def deleteDises(request,res_id,pk):
@@ -135,34 +145,10 @@ def deleteDises(request,res_id,pk):
 
 
 def billing(request,res_id):
+    username=request.session['username']
     obj=Dises.objects.filter(res_id=res_id)
     res=Restaurant.objects.get(id=res_id)
-    # objs=Transaction.objects.filter(res_id=res_id)
-    # li=[]
-    # data={}
-    # data1={}
-    # for share in objs:
-    #     li.append(ast.literal_eval(share.dises))
-
-    
-    # for i in li:
-    #     print(i)
-    #     for key,value in i.items():
-    #         if int(key) not in data:
-    #             data[int(key)]=int(value)
-    #         else:
-    #             data[int(key)]+=int(value)
-
-    
-
-    # print(data)
-    # for key,value in data.items():
-    #     dobj=Dises.objects.get(id=key)
-    #     data1[dobj.dises_name]=value
-
-    # print(data1)
-
-    return render(request,'billing.html',{"obj":obj,"res_id":res_id,"res":res,'date':str(datetime.datetime.today().strftime ('%d-%m-%Y'))})
+    return render(request,'billing.html',{'username':username,"obj":obj,"res_id":res_id,"res":res,'date':str(datetime.datetime.today().strftime ('%d-%m-%Y'))})
 
 def billData(request):
     data={}
@@ -189,6 +175,5 @@ def billData(request):
     print("data1:++++++",data1)
     return  HttpResponse(json.dumps(data1), content_type="application/json")
            
-def billview(request):
-    return render(request,'billview.html')
+
 
